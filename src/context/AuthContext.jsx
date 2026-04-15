@@ -67,8 +67,8 @@ export const AuthProvider = ({ children }) => {
       const response = await api.post('/admin/register', userData);
       return response.data;
     } else {
-      // Regular user registration uses auth endpoint
-      const response = await api.post('/auth/register', userData);
+      // Regular user registration uses user endpoint
+      const response = await api.post('/user/register', userData);
       return response.data;
     }
   };
