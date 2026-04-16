@@ -134,23 +134,56 @@ export default function HomePage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const plants = await productService.getFeaturedProducts(8);
-        if (plants.length > 0) {
+        console.log('🌱 Fetching featured products from API...');
+        const response = await productService.getFeaturedProducts(8);
+        console.log('📦 API response:', response);
+        
+        // Check if response has data and it's an array
+        if (response && response.data && Array.isArray(response.data)) {
+          console.log('✅ Found', response.data.length, 'products in API response');
+          
           // Transform API data to match HomePage structure
-          const transformedPlants = plants.map(plant => ({
-            id: plant.id,
-            name: plant.name,
-            price: plant.prize, // This will be displayed as ₹ in the UI
-            rating: 4.5, // Default rating since API doesn't have it
-            nursery: plant.nurseryName || 'Local Nursery',
-            image: getImageUrl(plant.productImage),
-            badge: plant.prize > 1000 ? 'Premium' : 'Popular'
-          }));
-          setFeaturedPlants(transformedPlants);
-          console.log('Featured plants loaded:', transformedPlants.length);
+          const transformedPlants = response.data.map((plant, index) => {
+            // Validate required fields
+            if (!plant.id || !plant.name) {
+              console.warn(`⚠️ Invalid plant data at index ${index}:`, plant);
+              return null;
+            }
+            
+            const transformedPlant = {
+              id: plant.id,
+              name: plant.name || 'Unknown Plant',
+              price: plant.prize || 0, // This will be displayed as ₹ in the UI
+              rating: plant.rating || 4.5, // Use API rating if available, otherwise default
+              nursery: plant.nurseryName || plant.nursery?.name || 'Local Nursery',
+              image: getImageUrl(plant.productImage || plant.image),
+              badge: plant.prize > 1000 ? 'Premium' : plant.prize > 500 ? 'Popular' : 'Great Value'
+            };
+            
+            console.log(`🌿 Transformed plant ${index + 1}:`, transformedPlant);
+            return transformedPlant;
+          }).filter(Boolean); // Remove any null entries from validation failures
+          
+          if (transformedPlants.length > 0) {
+            setFeaturedPlants(transformedPlants);
+            console.log('✅ Featured plants loaded successfully:', transformedPlants.length);
+          } else {
+            console.warn('⚠️ No valid plants found after transformation');
+          }
+        } else {
+          console.warn('⚠️ Invalid API response structure:', response);
         }
       } catch (error) {
-        console.log('Using mock data, API error:', error.message);
+        console.error('❌ API Error in fetchData:', error);
+        console.error('Error details:', {
+          message: error.message,
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data
+        });
+        
+        // Don't show error to user immediately, just log it
+        // Mock data will serve as fallback
       } finally {
         setLoading(false);
       }
