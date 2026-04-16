@@ -34,7 +34,7 @@ const RecommendationPage = () => {
   const [error, setError] = useState(null);
   const [activeStep, setActiveStep] = useState('initial'); // initial, loading, results
 
-  const OPENWEATHER_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
+  const OPENWEATHER_API_KEY = 'ec8a92a497452b7731c15b3f2836f9f9';
   const plantTips = [
     "Most indoor plants die from overwatering rather than underwatering.",
     "Plants with colorful leaves generally need more light than all-green plants.",
