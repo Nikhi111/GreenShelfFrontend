@@ -190,7 +190,10 @@ export default function HomePage() {
           </motion.p>
 
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="btn btn-primary w-full sm:w-auto">
+            <button 
+              onClick={() => navigate('/products')}
+              className="btn btn-primary w-full sm:w-auto"
+            >
               Shop Now <ArrowRight size={20} className="ml-2" />
             </button>
             <button className="btn btn-secondary w-full sm:w-auto">
