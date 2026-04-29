@@ -201,3 +201,5 @@ For support and questions:
 ---
 
 **GreenShelf** - Growing together, one plant at a time!
+
+<!-- README updated with comprehensive project documentation -->
